@@ -35,10 +35,24 @@ def main():
     gs = ChessEngine.GameState()
     load_images()  # Do this once, before the game loop
     running = True
+    sq_selected = ()  # no square initially selected, keep track of last click of user (tuple: (row, col))
+    player_clicks = []  # keep track of player clicks (two tuples: [(6, 4), (4, 4)])
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
+            elif e.type == p.MOUSEBUTTONDOWN:
+                location = p.mouse.get_pos()  # (x,y) location of mouse
+                col = location[0] // SQ_SIZE
+                row = location[1] // SQ_SIZE
+                if sq_selected == (row, col):  # user clicked same square twice
+                    sq_selected = ()  # unselected
+                    player_clicks = []  # clear
+                else:
+                    sq_selected = (row, col)
+                    player_clicks.append(sq_selected)  # append for both 1st and 2nd click
+                if len(player_clicks) == 2:
+                    pass
         draw_game_state(screen, gs)
         clock.tick(MAX_FPS)
         p.display.flip()
@@ -75,7 +89,11 @@ def draw_pieces(screen, board):
     :param board:
     :return:
     """
-    pass
+    for r in range(DIMENSION):
+        for c in range(DIMENSION):
+            piece = board[r][c]
+            if piece != "--":  # not an empty square
+                screen.blit(IMAGES[piece], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
 if __name__ == "__main__":
