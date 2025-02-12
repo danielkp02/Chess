@@ -51,8 +51,13 @@ def main():
                 else:
                     sq_selected = (row, col)
                     player_clicks.append(sq_selected)  # append for both 1st and 2nd click
-                if len(player_clicks) == 2:
-                    pass
+                if len(player_clicks) == 2:  # after second click
+                    move = ChessEngine.Move(player_clicks[0], player_clicks[1], gs.board)
+                    print(move.get_chess_notation())
+                    gs.make_move(move)
+                    sq_selected = ()
+                    player_clicks = []
+
         draw_game_state(screen, gs)
         clock.tick(MAX_FPS)
         p.display.flip()
